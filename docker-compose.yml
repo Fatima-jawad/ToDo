@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    networks:
+      - internal
+
+  app:
+    env_file:
+      - ./.env
+    build: .
+    container_name: app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+  app:
+
+networks:
+  internal:
+    name: app_network
